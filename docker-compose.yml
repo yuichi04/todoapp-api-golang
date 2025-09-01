@@ -1,0 +1,200 @@
+# Docker Compose設定ファイル
+# 複数のコンテナ（アプリケーション + データベース）を統合管理
+
+version: '3.8'
+
+# サービス（コンテナ）の定義
+services:
+  # Todo APIアプリケーションサービス
+  todoapp:
+    # Docker イメージのビルド設定
+    build:
+      context: .          # ビルドコンテキスト（Dockerfileがあるディレクトリ）
+      dockerfile: Dockerfile
+    
+    # コンテナ名の明示的指定
+    container_name: todoapp-api
+    
+    # ポートマッピング（ホスト:コンテナ）
+    # ホストマシンの8080番ポートをコンテナの8080番にマッピング
+    ports:
+      - "8080:8080"
+    
+    # 環境変数の設定
+    # アプリケーションの動作に必要な設定を注入
+    environment:
+      # アプリケーション設定
+      - APP_ENV=development
+      - APP_VERSION=1.0.0
+      - LOG_LEVEL=info
+      
+      # サーバー設定
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - SERVER_READ_TIMEOUT=30
+      - SERVER_WRITE_TIMEOUT=30
+      
+      # データベース設定（MySQLサービスへの接続）
+      - DB_DRIVER=mysql
+      - DB_HOST=mysql          # Docker Compose内のサービス名で接続
+      - DB_PORT=3306
+      - DB_NAME=todoapp
+      - DB_USER=todouser
+      - DB_PASSWORD=todopass
+      - DB_MAX_OPEN_CONNS=10
+      - DB_MAX_IDLE_CONNS=5
+      - DB_CONN_MAX_LIFETIME=60
+    
+    # サービス間の依存関係を定義
+    # mysqlサービスが起動してからtodoappを起動
+    depends_on:
+      mysql:
+        condition: service_healthy
+    
+    # ヘルスチェック設定
+    # コンテナの健全性を定期的に確認
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    
+    # コンテナ再起動ポリシー
+    # 異常終了時に自動で再起動
+    restart: unless-stopped
+    
+    # Docker ネットワーク接続
+    networks:
+      - todoapp-network
+
+  # MySQLデータベースサービス  
+  mysql:
+    # 公式MySQLイメージを使用（LTS版）
+    image: mysql:8.0
+    
+    # コンテナ名の明示的指定
+    container_name: todoapp-mysql
+    
+    # 環境変数でMySQL設定
+    environment:
+      # root パスワード（管理用）
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      
+      # アプリケーション用データベースの自動作成
+      - MYSQL_DATABASE=todoapp
+      
+      # アプリケーション用ユーザーの自動作成
+      - MYSQL_USER=todouser
+      - MYSQL_PASSWORD=todopass
+      
+      # 文字セット設定（日本語対応）
+      - MYSQL_CHARSET=utf8mb4
+      - MYSQL_COLLATION=utf8mb4_unicode_ci
+    
+    # ポートマッピング（開発用）
+    # ホストから直接MySQLに接続する場合に使用
+    ports:
+      - "3306:3306"
+    
+    # ボリュームマウント（データ永続化）
+    volumes:
+      # データファイルの永続化
+      - mysql_data:/var/lib/mysql
+      
+      # 初期化スクリプト（オプション）
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    
+    # MySQLの設定ファイル（パフォーマンス調整）
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+      --innodb-buffer-pool-size=256M
+      --max-connections=100
+    
+    # ヘルスチェック設定
+    # MySQLが完全に起動するまで待機
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+    
+    # コンテナ再起動ポリシー
+    restart: unless-stopped
+    
+    # Docker ネットワーク接続
+    networks:
+      - todoapp-network
+
+  # 開発支援サービス（オプション）
+  # phpMyAdmin - MySQLの管理用Webインターフェース
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: todoapp-phpmyadmin
+    
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=rootpassword
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    
+    ports:
+      - "8081:80"
+    
+    depends_on:
+      mysql:
+        condition: service_healthy
+    
+    restart: unless-stopped
+    networks:
+      - todoapp-network
+
+# 名前付きボリュームの定義
+# データの永続化とコンテナ間でのデータ共有
+volumes:
+  # MySQLのデータファイルを永続化
+  # コンテナを削除してもデータが残る
+  mysql_data:
+    driver: local
+
+# カスタムネットワークの定義
+# サービス間の通信を分離・制御
+networks:
+  todoapp-network:
+    driver: bridge
+    # ネットワーク設定（必要に応じて）
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Docker Composeの使用例とベストプラクティス：
+#
+# 1. 開発環境での利用:
+#    - アプリケーション + データベースの一括起動
+#    - 開発用のデータベース管理ツール（phpMyAdmin）
+#    - ログの一元管理
+#
+# 2. 環境分離:
+#    - 各環境（dev, staging, prod）向けの設定ファイル
+#    - .env ファイルでの環境変数管理
+#
+# 3. セキュリティ:
+#    - 本番環境では不要なサービス（phpMyAdmin）を除外
+#    - 強力なパスワードの設定
+#    - ネットワーク分離
+#
+# 4. パフォーマンス:
+#    - データベースの適切な設定
+#    - リソース制限の設定
+#
+# 5. 監視・ログ:
+#    - ヘルスチェック設定
+#    - ログドライバーの設定
+#
+# 6. スケーラビリティ:
+#    - 複数レプリカの起動
+#    - ロードバランサーの追加

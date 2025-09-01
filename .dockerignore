@@ -1,0 +1,137 @@
+# .dockerignore
+# Dockerビルド時にコンテキストから除外するファイル・ディレクトリを指定
+# ビルド時間の短縮とセキュリティの向上を目的とする
+
+# Git関連ファイル
+# バージョン管理情報は本番環境に不要
+.git
+.gitignore
+
+# Docker関連ファイル
+# 再帰的なDockerビルドを防ぐため
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# ドキュメントファイル
+# アプリケーション実行には不要
+README.md
+docs/
+*.md
+
+# 開発環境固有ファイル
+# 本番環境では使用しない設定ファイル
+.env
+.env.local
+.env.development
+.env.test
+
+# IDE・エディタ固有ファイル
+# 開発ツール固有の設定ファイル
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS固有ファイル
+# オペレーティングシステムが生成する不要ファイル
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ログファイル
+# 実行時に生成されるログは除外
+*.log
+logs/
+log/
+
+# 一時ファイル・キャッシュ
+# ビルドやテスト時に生成される一時ファイル
+tmp/
+temp/
+.tmp
+*.tmp
+*.temp
+
+# テスト関連
+# テストコードやテスト結果ファイル
+*_test.go
+test/
+tests/
+coverage.out
+coverage.html
+.coverage
+
+# ビルド成果物
+# 既存のバイナリファイルは除外（Dockerで新規ビルド）
+todoapp
+*.exe
+*.dll
+*.so
+*.dylib
+dist/
+build/
+
+# 依存関係（キャッシュファイル）
+# Go Modulesは go.mod/go.sum で管理するため
+vendor/
+
+# バックアップファイル
+# エディタが作成するバックアップファイル
+*.bak
+*.backup
+*~
+
+# 設定ファイル例
+# 実際の設定ではなく、テンプレートファイル
+*.example
+*.sample
+
+# セキュリティ関連ファイル
+# 秘密鍵や証明書などの機密情報
+*.key
+*.pem
+*.crt
+*.cert
+secrets/
+.secrets
+
+# パフォーマンス・デバッグファイル
+# プロファイリングやデバッグ情報
+*.prof
+*.pprof
+debug
+
+# Node.js関連（フロントエンドがある場合）
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# .dockerignore のベストプラクティス：
+#
+# 1. セキュリティ:
+#    - 機密情報（.env, 秘密鍵等）の除外
+#    - 開発環境固有の設定ファイル除外
+#
+# 2. パフォーマンス:
+#    - 不要なファイルを除外してビルド時間短縮
+#    - イメージサイズの最小化
+#
+# 3. 保守性:
+#    - 明確なコメントとカテゴリ分け
+#    - 定期的な見直しと更新
+#
+# 4. 一貫性:
+#    - .gitignore との適切な使い分け
+#    - チーム内での統一ルール
+#
+# 注意点：
+# - 必要なファイルを誤って除外しないよう注意
+# - 新しいファイルタイプが追加された場合の更新
+# - 環境別の設定ファイルの適切な管理
