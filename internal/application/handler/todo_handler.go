@@ -22,12 +22,12 @@ import (
 type TodoHandler struct {
 	// todoService はビジネスロジック処理を担当するドメインサービス
 	// 依存性注入によってサービス実装を受け取ります
-	todoService *service.TodoService
+	todoService service.TodoServiceInterface
 }
 
 // NewTodoHandler はTodoHandlerのコンストラクタです
 // 標準パッケージを使った依存性注入の実装例
-func NewTodoHandler(todoService *service.TodoService) *TodoHandler {
+func NewTodoHandler(todoService service.TodoServiceInterface) *TodoHandler {
 	return &TodoHandler{
 		todoService: todoService,
 	}

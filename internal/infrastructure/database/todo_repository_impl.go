@@ -42,7 +42,7 @@ func (r *todoRepositoryImpl) Create(ctx context.Context, todo *entity.Todo) (*en
 	// created_at, updated_atは現在時刻、is_completedはfalseで固定
 	query := `
 		INSERT INTO todos (title, description, is_completed, created_at, updated_at)
-		VALUES (?, ?, false, NOW(), NOW())
+		VALUES (?, ?, false, datetime('now'), datetime('now'))
 	`
 
 	// 2. コンテキスト付きでSQL実行
@@ -163,7 +163,7 @@ func (r *todoRepositoryImpl) Update(ctx context.Context, todo *entity.Todo) (*en
 	// updated_at は現在時刻で自動更新
 	query := `
 		UPDATE todos
-		SET title = ?, description = ?, is_completed = ?, updated_at = NOW()
+		SET title = ?, description = ?, is_completed = ?, updated_at = datetime('now')
 		WHERE id = ?
 	`
 
