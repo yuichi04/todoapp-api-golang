@@ -16,9 +16,9 @@ import (
 // 3. WriteHeader() のオーバーライド
 // 4. レスポンス情報の記録
 type ResponseRecorder struct {
-	http.ResponseWriter                // 埋め込みで元のResponseWriterの機能を継承
-	statusCode          int            // HTTPステータスコードを記録
-	responseSize        int            // レスポンスサイズ（バイト数）を記録
+	http.ResponseWriter     // 埋め込みで元のResponseWriterの機能を継承
+	statusCode          int // HTTPステータスコードを記録
+	responseSize        int // レスポンスサイズ（バイト数）を記録
 }
 
 // NewResponseRecorder はResponseRecorderのコンストラクタです
@@ -70,12 +70,12 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		// Apache Combined Log Format に近い形式でログ出力
 		// [timestamp] method path status size duration
 		log.Printf("%s %s %s %d %d %v",
-			r.RemoteAddr,           // クライアントのIPアドレス
-			r.Method,               // HTTPメソッド（GET, POST, etc）
-			r.URL.Path,             // リクエストパス
-			recorder.statusCode,    // HTTPステータスコード
-			recorder.responseSize,  // レスポンスサイズ（バイト）
-			duration,               // 処理時間
+			r.RemoteAddr,          // クライアントのIPアドレス
+			r.Method,              // HTTPメソッド（GET, POST, etc）
+			r.URL.Path,            // リクエストパス
+			recorder.statusCode,   // HTTPステータスコード
+			recorder.responseSize, // レスポンスサイズ（バイト）
+			duration,              // 処理時間
 		)
 	})
 }
@@ -102,7 +102,7 @@ func DetailedLoggingMiddleware(next http.Handler) http.Handler {
 
 		// 処理完了後の詳細ログ出力
 		duration := time.Since(start)
-		
+
 		log.Printf("← %s %s %d %d %v",
 			r.Method,
 			r.URL.Path,
@@ -126,7 +126,7 @@ func RequestIDMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// 1. 既存のリクエストIDをチェック（ロードバランサー等から）
 		requestID := r.Header.Get("X-Request-ID")
-		
+
 		// 2. リクエストIDがない場合は生成
 		if requestID == "" {
 			requestID = generateRequestID()
@@ -152,11 +152,11 @@ func RecoveryMiddleware(next http.Handler) http.Handler {
 			if err := recover(); err != nil {
 				// パニックをログに記録
 				log.Printf("PANIC: %v", err)
-				
+
 				// スタックトレースも出力（開発環境）
 				// 本番環境では機密情報を含む可能性があるため注意
 				log.Printf("Request: %s %s", r.Method, r.URL.Path)
-				
+
 				// クライアントには500エラーを返す
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			}
@@ -177,7 +177,6 @@ func generateRequestID() string {
 	timestamp := time.Now().UnixNano()
 	return fmt.Sprintf("req_%d", timestamp)
 }
-
 
 // ChainMiddleware は複数のミドルウェアを連鎖させるためのヘルパー関数です
 // 標準パッケージでのミドルウェアチェーンの学習

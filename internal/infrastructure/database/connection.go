@@ -45,9 +45,9 @@ func (dm *DatabaseManager) Connect() error {
 
 	// 2. データソース名（DSN）の構築
 	dsn := dm.config.GetDSN()
-	log.Printf("Connecting to database: %s@%s:%d/%s", 
-		dm.config.Database.User, 
-		dm.config.Database.Host, 
+	log.Printf("Connecting to database: %s@%s:%d/%s",
+		dm.config.Database.User,
+		dm.config.Database.Host,
 		dm.config.Database.Port,
 		dm.config.Database.Name)
 
@@ -61,15 +61,15 @@ func (dm *DatabaseManager) Connect() error {
 
 	// 4. コネクションプールの設定
 	// これらの設定はパフォーマンスとリソース使用量に重要な影響を与える
-	
+
 	// SetMaxOpenConns: 同時に開けるコネクションの最大数
 	// 高い値 = 並行性向上、低い値 = DB負荷軽減
 	db.SetMaxOpenConns(dm.config.Database.MaxOpenConns)
-	
+
 	// SetMaxIdleConns: アイドル状態で保持するコネクションの最大数
 	// アイドル接続があることで新しいリクエストへの応答が高速化
 	db.SetMaxIdleConns(dm.config.Database.MaxIdleConns)
-	
+
 	// SetConnMaxLifetime: コネクションの最大生存時間
 	// 長時間の接続による問題（タイムアウト等）を防ぐ
 	db.SetConnMaxLifetime(time.Duration(dm.config.Database.ConnMaxLifetime) * time.Minute)
@@ -176,15 +176,15 @@ func (dm *DatabaseManager) GetStats() (map[string]interface{}, error) {
 	stats := dm.DB.Stats()
 
 	return map[string]interface{}{
-		"max_open_connections":    stats.MaxOpenConnections,    // 設定された最大オープン接続数
-		"open_connections":        stats.OpenConnections,       // 現在のオープン接続数
-		"in_use":                 stats.InUse,                 // 現在使用中の接続数
-		"idle":                   stats.Idle,                  // 現在アイドル状態の接続数
-		"wait_count":             stats.WaitCount,             // 接続待ちが発生した回数
-		"wait_duration":          stats.WaitDuration.String(), // 接続待ちの累積時間
-		"max_idle_closed":        stats.MaxIdleClosed,         // アイドル上限で閉じられた接続数
-		"max_idle_time_closed":   stats.MaxIdleTimeClosed,     // アイドル時間で閉じられた接続数
-		"max_lifetime_closed":    stats.MaxLifetimeClosed,     // 生存時間で閉じられた接続数
+		"max_open_connections": stats.MaxOpenConnections,    // 設定された最大オープン接続数
+		"open_connections":     stats.OpenConnections,       // 現在のオープン接続数
+		"in_use":               stats.InUse,                 // 現在使用中の接続数
+		"idle":                 stats.Idle,                  // 現在アイドル状態の接続数
+		"wait_count":           stats.WaitCount,             // 接続待ちが発生した回数
+		"wait_duration":        stats.WaitDuration.String(), // 接続待ちの累積時間
+		"max_idle_closed":      stats.MaxIdleClosed,         // アイドル上限で閉じられた接続数
+		"max_idle_time_closed": stats.MaxIdleTimeClosed,     // アイドル時間で閉じられた接続数
+		"max_lifetime_closed":  stats.MaxLifetimeClosed,     // 生存時間で閉じられた接続数
 	}, nil
 }
 
@@ -201,7 +201,7 @@ func (dm *DatabaseManager) ExecuteMigration(migrationSQL string) error {
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
 	}
-	
+
 	// defer でのトランザクション管理
 	// パニックやエラーが発生した場合の安全な処理
 	defer func() {

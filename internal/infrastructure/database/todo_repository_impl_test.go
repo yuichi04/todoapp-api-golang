@@ -476,7 +476,7 @@ func TestTodoRepository_Transaction(t *testing.T) {
 	// このテストでは基本的なトランザクションの動作を確認
 	// 現在の実装では完全なトランザクション分離は実装されていないため、
 	// 基本的な作成・ロールバックのパターンをテスト
-	
+
 	// 初期状態での件数を確認
 	initialCount := getTodoCount(t, db)
 

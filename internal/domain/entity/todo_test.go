@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 )
@@ -140,14 +141,31 @@ func TestTodo_MarkAsIncomplete(t *testing.T) {
 	}
 }
 
-// TestTodo_TableName はテーブル名取得機能をテストします
-func TestTodo_TableName(t *testing.T) {
-	todo := Todo{}
-	tableName := todo.TableName()
-	
-	expected := "todos"
-	if tableName != expected {
-		t.Errorf("TableName() = %v, 期待値 = %v", tableName, expected)
+// TestTodo_JSONMarshaling はJSON変換機能をテストします
+// 標準パッケージではORMのTableNameメソッドは不要のため、
+// 代わりにJSONマーシャリングのテストを実装
+func TestTodo_JSONMarshaling(t *testing.T) {
+	todo := Todo{
+		ID:          1,
+		Title:       "テストタスク",
+		Description: "JSON変換テスト",
+		IsCompleted: false,
+		CreatedAt:   time.Date(2023, 1, 1, 12, 0, 0, 0, time.UTC),
+		UpdatedAt:   time.Date(2023, 1, 1, 12, 0, 0, 0, time.UTC),
+	}
+
+	// JSON形式の期待値（時刻フォーマットに注意）
+	expected := `{"id":1,"title":"テストタスク","description":"JSON変換テスト","is_completed":false,"created_at":"2023-01-01T12:00:00Z","updated_at":"2023-01-01T12:00:00Z"}`
+
+	// 構造体からJSONに変換
+	jsonData, err := json.Marshal(todo)
+	if err != nil {
+		t.Errorf("JSON Marshal エラー: %v", err)
+	}
+
+	// JSON文字列の比較
+	if string(jsonData) != expected {
+		t.Errorf("JSON Marshal結果が期待値と異なります\n実際: %s\n期待: %s", string(jsonData), expected)
 	}
 }
 

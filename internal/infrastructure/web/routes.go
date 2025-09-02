@@ -44,10 +44,10 @@ func (router *Router) SetupRoutes() http.Handler {
 	// 3. ミドルウェアチェーンの構築
 	// 複数のミドルウェアを組み合わせてリクエスト処理を強化
 	finalHandler := middleware.ChainMiddleware(
-		middleware.RecoveryMiddleware,                              // パニック回復
-		middleware.LoggingMiddleware,                               // アクセスログ
-		middleware.SimpleCORSMiddleware,                           // CORS対応
-		middleware.RequestIDMiddleware,                             // リクエストID付与
+		middleware.RecoveryMiddleware,   // パニック回復
+		middleware.LoggingMiddleware,    // アクセスログ
+		middleware.SimpleCORSMiddleware, // CORS対応
+		middleware.RequestIDMiddleware,  // リクエストID付与
 	)(router.mux)
 
 	return finalHandler
@@ -65,7 +65,7 @@ func (router *Router) healthCheckHandler(w http.ResponseWriter, r *http.Request)
 	// シンプルなJSONレスポンス
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	
+
 	// 手動でJSONを構築（encoding/jsonを使わない学習用）
 	response := `{
 		"status": "ok",
@@ -84,7 +84,7 @@ func (router *Router) apiV1Handler(w http.ResponseWriter, r *http.Request) {
 
 	// パスを "/" で分割してセグメント化
 	segments := strings.Split(path, "/")
-	
+
 	// 空のパスや無効なパスの処理
 	if len(segments) == 0 || segments[0] == "" {
 		http.NotFound(w, r)

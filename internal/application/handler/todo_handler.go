@@ -58,9 +58,9 @@ func (h *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 
 	// 3. JSONリクエストボディをDTOにデコード
 	var req dto.CreateTodoRequest
-	
+
 	// json.NewDecoder を使ってストリームからJSONを読み取り
-	// これはGinの ShouldBindJSON() と同等の処理を手動で行う
+	// 標準パッケージでのJSONデコード処理
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&req); err != nil {
 		// JSONパースエラーの場合は400 Bad Requestを返す
@@ -157,7 +157,7 @@ func (h *TodoHandler) GetAllTodos(w http.ResponseWriter, r *http.Request) {
 
 	// 2. クエリパラメータの解析
 	query := r.URL.Query()
-	
+
 	// ページング用パラメータの取得（将来拡張用）
 	page := 1
 	if p := query.Get("page"); p != "" {
@@ -165,7 +165,7 @@ func (h *TodoHandler) GetAllTodos(w http.ResponseWriter, r *http.Request) {
 			page = pageNum
 		}
 	}
-	
+
 	limit := 10
 	if l := query.Get("limit"); l != "" {
 		if limitNum, err := strconv.Atoi(l); err == nil && limitNum > 0 && limitNum <= 100 {
@@ -285,7 +285,7 @@ func (h *TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// CompleteTodo はTodoを完了状態にするHTTPハンドラーです  
+// CompleteTodo はTodoを完了状態にするHTTPハンドラーです
 // PATCH /api/v1/todos/{id}/complete へのリクエストを処理します
 func (h *TodoHandler) CompleteTodo(w http.ResponseWriter, r *http.Request) {
 	// 1. HTTPメソッドの確認
@@ -369,10 +369,10 @@ func (h *TodoHandler) IncompleteTodo(w http.ResponseWriter, r *http.Request) {
 func writeJSONResponse(w http.ResponseWriter, statusCode int, data interface{}) {
 	// 1. Content-Typeヘッダーを設定
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	
+
 	// 2. ステータスコードを設定
 	w.WriteHeader(statusCode)
-	
+
 	// 3. JSONエンコードしてレスポンス書き込み
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(data); err != nil {

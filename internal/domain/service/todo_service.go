@@ -26,6 +26,7 @@ type TodoService struct {
 // 依存性注入（Dependency Injection）のパターンを使用しています
 // 引数:
 //   - todoRepo: TodoRepositoryインターフェースの実装
+//
 // 戻り値:
 //   - *TodoService: 初期化されたTodoService
 func NewTodoService(todoRepo repository.TodoRepository) *TodoService {

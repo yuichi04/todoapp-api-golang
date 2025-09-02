@@ -61,7 +61,7 @@ func (m *MockTodoRepository) Create(ctx context.Context, todo *entity.Todo) (*en
 	// IDを設定して保存
 	todo.ID = m.nextID
 	m.nextID++
-	
+
 	// コピーを作成して保存（参照の問題を避ける）
 	savedTodo := *todo
 	m.todos[todo.ID] = &savedTodo
@@ -279,15 +279,15 @@ func TestTodoService_GetTodoByID(t *testing.T) {
 			setupMock: func(m *MockTodoRepository) {},
 		},
 		{
-			name:    "無効なID（0）",
-			id:      0,
-			wantErr: true,
+			name:      "無効なID（0）",
+			id:        0,
+			wantErr:   true,
 			setupMock: func(m *MockTodoRepository) {},
 		},
 		{
-			name:    "無効なID（負数）",
-			id:      -1,
-			wantErr: true,
+			name:      "無効なID（負数）",
+			id:        -1,
+			wantErr:   true,
 			setupMock: func(m *MockTodoRepository) {},
 		},
 		{
@@ -334,17 +334,17 @@ func TestTodoService_GetAllTodos(t *testing.T) {
 	ctx := context.Background()
 
 	tests := []struct {
-		name         string
-		setupData    func(*MockTodoRepository)
-		setupMock    func(*MockTodoRepository)
-		wantErr      bool
-		expectedLen  int
+		name        string
+		setupData   func(*MockTodoRepository)
+		setupMock   func(*MockTodoRepository)
+		wantErr     bool
+		expectedLen int
 	}{
 		{
-			name: "空のTodoリスト",
-			setupData: func(m *MockTodoRepository) {},
-			setupMock: func(m *MockTodoRepository) {},
-			wantErr:   false,
+			name:        "空のTodoリスト",
+			setupData:   func(m *MockTodoRepository) {},
+			setupMock:   func(m *MockTodoRepository) {},
+			wantErr:     false,
 			expectedLen: 0,
 		},
 		{
@@ -354,12 +354,12 @@ func TestTodoService_GetAllTodos(t *testing.T) {
 				m.todos[2] = &entity.Todo{ID: 2, Title: "タスク2"}
 				m.todos[3] = &entity.Todo{ID: 3, Title: "タスク3"}
 			},
-			setupMock: func(m *MockTodoRepository) {},
-			wantErr:   false,
+			setupMock:   func(m *MockTodoRepository) {},
+			wantErr:     false,
 			expectedLen: 3,
 		},
 		{
-			name: "リポジトリエラー",
+			name:      "リポジトリエラー",
 			setupData: func(m *MockTodoRepository) {},
 			setupMock: func(m *MockTodoRepository) {
 				m.SetError(true, "database error")
@@ -517,9 +517,9 @@ func TestTodoService_DeleteTodo(t *testing.T) {
 			setupMock: func(m *MockTodoRepository) {},
 		},
 		{
-			name:    "無効なID",
-			id:      0,
-			wantErr: true,
+			name:      "無効なID",
+			id:        0,
+			wantErr:   true,
 			setupMock: func(m *MockTodoRepository) {},
 		},
 		{

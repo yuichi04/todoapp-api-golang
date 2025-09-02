@@ -42,15 +42,15 @@ func (s *Server) Start() error {
 	s.httpServer = &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", s.config.Server.Host, s.config.Server.Port),
 		Handler: s.router.SetupRoutes(), // ルーティング設定を取得
-		
+
 		// タイムアウト設定（セキュリティとパフォーマンス対策）
 		ReadTimeout:  time.Duration(s.config.Server.ReadTimeout) * time.Second,
 		WriteTimeout: time.Duration(s.config.Server.WriteTimeout) * time.Second,
 		IdleTimeout:  60 * time.Second, // Keep-Alive接続のタイムアウト
-		
+
 		// ヘッダーサイズ制限（DoS攻撃対策）
 		MaxHeaderBytes: 1 << 20, // 1MB
-		
+
 		// エラーログの設定
 		ErrorLog: log.New(os.Stderr, "SERVER ERROR: ", log.LstdFlags|log.Lshortfile),
 	}
@@ -60,7 +60,7 @@ func (s *Server) Start() error {
 	go s.gracefulShutdown()
 
 	// 3. サーバー起動ログ
-	log.Printf("Starting HTTP server on %s (environment: %s)", 
+	log.Printf("Starting HTTP server on %s (environment: %s)",
 		s.httpServer.Addr, s.config.App.Environment)
 
 	// 4. HTTPSまたはHTTPでの起動
@@ -107,15 +107,15 @@ func (s *Server) Stop(ctx context.Context) error {
 func (s *Server) gracefulShutdown() {
 	// 1. シグナルを受信するチャンネルを作成
 	sigChan := make(chan os.Signal, 1)
-	
+
 	// 2. 監視するシグナルを登録
 	// SIGINT: 割り込みシグナル（Ctrl+C）
 	// SIGTERM: 終了シグナル（docker stop、killコマンド等）
-	signal.Notify(sigChan, 
+	signal.Notify(sigChan,
 		syscall.SIGINT,  // 2
 		syscall.SIGTERM, // 15
 	)
-	
+
 	// 3. シグナル受信を待機（ブロッキング）
 	sig := <-sigChan
 	log.Printf("Received signal: %v", sig)
@@ -145,7 +145,7 @@ func (s *Server) shouldUseHTTPS() bool {
 func (s *Server) hasCertificateFiles() bool {
 	certFile := s.getCertFile()
 	keyFile := s.getKeyFile()
-	
+
 	// 両方のファイルが存在することを確認
 	if _, err := os.Stat(certFile); os.IsNotExist(err) {
 		return false
@@ -153,7 +153,7 @@ func (s *Server) hasCertificateFiles() bool {
 	if _, err := os.Stat(keyFile); os.IsNotExist(err) {
 		return false
 	}
-	
+
 	return true
 }
 

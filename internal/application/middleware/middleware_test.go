@@ -56,7 +56,7 @@ func TestChainMiddleware(t *testing.T) {
 	// 実行順序の確認
 	expectedOrder := []string{
 		"middleware1-before",
-		"middleware2-before", 
+		"middleware2-before",
 		"final-handler",
 		"middleware2-after",
 		"middleware1-after",
@@ -210,7 +210,7 @@ func TestRequestIDMiddleware(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			req := httptest.NewRequest(http.MethodGet, "/test", nil)
-			
+
 			if tt.existingReqID != "" {
 				req.Header.Set("X-Request-ID", tt.existingReqID)
 			}
@@ -247,22 +247,22 @@ func TestRequestIDMiddleware(t *testing.T) {
 // TestRecoveryMiddleware はパニック回復ミドルウェアをテストします
 func TestRecoveryMiddleware(t *testing.T) {
 	tests := []struct {
-		name            string
-		shouldPanic     bool
-		expectedStatus  int
-		expectedBody    string
+		name           string
+		shouldPanic    bool
+		expectedStatus int
+		expectedBody   string
 	}{
 		{
-			name:            "正常処理",
-			shouldPanic:     false,
-			expectedStatus:  http.StatusOK,
-			expectedBody:    "OK",
+			name:           "正常処理",
+			shouldPanic:    false,
+			expectedStatus: http.StatusOK,
+			expectedBody:   "OK",
 		},
 		{
-			name:            "パニック発生時の回復",
-			shouldPanic:     true,
-			expectedStatus:  http.StatusInternalServerError,
-			expectedBody:    "Internal Server Error\n",
+			name:           "パニック発生時の回復",
+			shouldPanic:    true,
+			expectedStatus: http.StatusInternalServerError,
+			expectedBody:   "Internal Server Error\n",
 		},
 	}
 
@@ -299,7 +299,7 @@ func TestRecoveryMiddleware(t *testing.T) {
 func TestResponseRecorder(t *testing.T) {
 	// 元のResponseWriterを作成
 	rec := httptest.NewRecorder()
-	
+
 	// ResponseRecorderでラップ
 	recorder := NewResponseRecorder(rec)
 

@@ -118,7 +118,7 @@ func (r *todoRepositoryImpl) GetAll(ctx context.Context) ([]*entity.Todo, error)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query todos: %w", err)
 	}
-	
+
 	// 3. 重要：rowsは必ずClose()する（deferで確実に実行）
 	// リソースリーク防止のための必須処理
 	defer rows.Close()
@@ -129,7 +129,7 @@ func (r *todoRepositoryImpl) GetAll(ctx context.Context) ([]*entity.Todo, error)
 	// 5. rows.Next()でループして全ての行を処理
 	for rows.Next() {
 		var todo entity.Todo
-		
+
 		// 各行をScanして構造体に格納
 		err := rows.Scan(
 			&todo.ID,
@@ -142,7 +142,7 @@ func (r *todoRepositoryImpl) GetAll(ctx context.Context) ([]*entity.Todo, error)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan todo row: %w", err)
 		}
-		
+
 		// スライスに追加
 		todos = append(todos, &todo)
 	}
@@ -267,7 +267,7 @@ func (r *todoRepositoryImpl) GetWithPagination(ctx context.Context, offset, limi
 	// 1. 総件数を取得するSQL
 	countQuery := `SELECT COUNT(*) FROM todos`
 	var total int64
-	
+
 	err := r.db.QueryRowContext(ctx, countQuery).Scan(&total)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to count todos: %w", err)

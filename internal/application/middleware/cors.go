@@ -58,7 +58,7 @@ func DefaultCORSConfig() CORSConfig {
 			"X-Requested-With",
 		},
 		AllowCredentials: false,
-		MaxAge:          86400, // 24時間
+		MaxAge:           86400, // 24時間
 	}
 }
 
@@ -84,7 +84,7 @@ func CORSMiddleware(config CORSConfig) func(http.Handler) http.Handler {
 			// 2. 基本的なCORSヘッダーを設定
 			w.Header().Set("Access-Control-Allow-Methods", joinStrings(config.AllowedMethods, ", "))
 			w.Header().Set("Access-Control-Allow-Headers", joinStrings(config.AllowedHeaders, ", "))
-			
+
 			// 3. 認証情報の許可設定
 			if config.AllowCredentials {
 				w.Header().Set("Access-Control-Allow-Credentials", "true")

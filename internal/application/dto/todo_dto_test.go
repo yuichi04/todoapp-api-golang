@@ -128,8 +128,8 @@ func TestUpdateTodoRequest_ApplyToEntity(t *testing.T) {
 			},
 		},
 		{
-			name:     "何も更新しない",
-			request:  UpdateTodoRequest{},
+			name:    "何も更新しない",
+			request: UpdateTodoRequest{},
 			original: &entity.Todo{
 				ID:          1,
 				Title:       "元のタイトル",
@@ -149,7 +149,7 @@ func TestUpdateTodoRequest_ApplyToEntity(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// オリジナルをコピー
 			got := *tt.original
-			
+
 			// リクエストを適用
 			tt.request.ApplyToEntity(&got)
 
@@ -256,7 +256,7 @@ func TestToTodoResponse(t *testing.T) {
 // TestTodoResponse_JSONSerialization はJSONシリアライゼーションをテストします
 func TestTodoResponse_JSONSerialization(t *testing.T) {
 	fixedTime := time.Date(2023, 12, 25, 15, 30, 45, 0, time.UTC)
-	
+
 	response := TodoResponse{
 		ID:          1,
 		Title:       "テストタスク",
@@ -308,10 +308,10 @@ func TestTodoResponse_JSONSerialization(t *testing.T) {
 // TestCreateTodoRequest_JSONDeserialization はリクエストのJSONデシリアライゼーションをテストします
 func TestCreateTodoRequest_JSONDeserialization(t *testing.T) {
 	tests := []struct {
-		name     string
-		jsonStr  string
-		want     CreateTodoRequest
-		wantErr  bool
+		name    string
+		jsonStr string
+		want    CreateTodoRequest
+		wantErr bool
 	}{
 		{
 			name:    "正常なJSON",
@@ -332,16 +332,16 @@ func TestCreateTodoRequest_JSONDeserialization(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:     "不正なJSON",
-			jsonStr:  `{"title": invalid json}`,
-			want:     CreateTodoRequest{},
-			wantErr:  true,
+			name:    "不正なJSON",
+			jsonStr: `{"title": invalid json}`,
+			want:    CreateTodoRequest{},
+			wantErr: true,
 		},
 		{
-			name:     "空のJSON",
-			jsonStr:  `{}`,
-			want:     CreateTodoRequest{},
-			wantErr:  false,
+			name:    "空のJSON",
+			jsonStr: `{}`,
+			want:    CreateTodoRequest{},
+			wantErr: false,
 		},
 	}
 

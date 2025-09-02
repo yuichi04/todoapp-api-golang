@@ -41,7 +41,7 @@ func (m *MockTodoService) SetError(shouldError bool, errorMsg string) {
 // CreateTodo のモック実装
 func (m *MockTodoService) CreateTodo(ctx context.Context, todo *entity.Todo) (*entity.Todo, error) {
 	m.callCounts["CreateTodo"]++
-	
+
 	if m.shouldError {
 		return nil, errors.New(m.errorMsg)
 	}
@@ -60,7 +60,7 @@ func (m *MockTodoService) CreateTodo(ctx context.Context, todo *entity.Todo) (*e
 // GetTodoByID のモック実装
 func (m *MockTodoService) GetTodoByID(ctx context.Context, id int) (*entity.Todo, error) {
 	m.callCounts["GetTodoByID"]++
-	
+
 	if m.shouldError {
 		return nil, errors.New(m.errorMsg)
 	}
@@ -77,7 +77,7 @@ func (m *MockTodoService) GetTodoByID(ctx context.Context, id int) (*entity.Todo
 // GetAllTodos のモック実装
 func (m *MockTodoService) GetAllTodos(ctx context.Context) ([]*entity.Todo, error) {
 	m.callCounts["GetAllTodos"]++
-	
+
 	if m.shouldError {
 		return nil, errors.New(m.errorMsg)
 	}
@@ -94,7 +94,7 @@ func (m *MockTodoService) GetAllTodos(ctx context.Context) ([]*entity.Todo, erro
 // UpdateTodo のモック実装
 func (m *MockTodoService) UpdateTodo(ctx context.Context, todo *entity.Todo) (*entity.Todo, error) {
 	m.callCounts["UpdateTodo"]++
-	
+
 	if m.shouldError {
 		return nil, errors.New(m.errorMsg)
 	}
@@ -114,7 +114,7 @@ func (m *MockTodoService) UpdateTodo(ctx context.Context, todo *entity.Todo) (*e
 // DeleteTodo のモック実装
 func (m *MockTodoService) DeleteTodo(ctx context.Context, id int) error {
 	m.callCounts["DeleteTodo"]++
-	
+
 	if m.shouldError {
 		return errors.New(m.errorMsg)
 	}
@@ -131,7 +131,7 @@ func (m *MockTodoService) DeleteTodo(ctx context.Context, id int) error {
 // CompleteTodo のモック実装
 func (m *MockTodoService) CompleteTodo(ctx context.Context, id int) (*entity.Todo, error) {
 	m.callCounts["CompleteTodo"]++
-	
+
 	if m.shouldError {
 		return nil, errors.New(m.errorMsg)
 	}
@@ -143,7 +143,7 @@ func (m *MockTodoService) CompleteTodo(ctx context.Context, id int) (*entity.Tod
 
 	todo.MarkAsCompleted()
 	todo.UpdatedAt = time.Now()
-	
+
 	result := *todo
 	return &result, nil
 }
@@ -151,7 +151,7 @@ func (m *MockTodoService) CompleteTodo(ctx context.Context, id int) (*entity.Tod
 // IncompleteTodo のモック実装
 func (m *MockTodoService) IncompleteTodo(ctx context.Context, id int) (*entity.Todo, error) {
 	m.callCounts["IncompleteTodo"]++
-	
+
 	if m.shouldError {
 		return nil, errors.New(m.errorMsg)
 	}
@@ -163,7 +163,7 @@ func (m *MockTodoService) IncompleteTodo(ctx context.Context, id int) (*entity.T
 
 	todo.MarkAsIncomplete()
 	todo.UpdatedAt = time.Now()
-	
+
 	result := *todo
 	return &result, nil
 }
@@ -287,10 +287,10 @@ func TestTodoHandler_GetAllTodos(t *testing.T) {
 		checkResponse  func(*testing.T, *httptest.ResponseRecorder)
 	}{
 		{
-			name:      "空のTodoリスト取得",
-			method:    http.MethodGet,
-			setupData: func(m *MockTodoService) {},
-			setupMock: func(m *MockTodoService) {},
+			name:           "空のTodoリスト取得",
+			method:         http.MethodGet,
+			setupData:      func(m *MockTodoService) {},
+			setupMock:      func(m *MockTodoService) {},
 			expectedStatus: http.StatusOK,
 			checkResponse: func(t *testing.T, rec *httptest.ResponseRecorder) {
 				var response map[string]interface{}
@@ -315,7 +315,7 @@ func TestTodoHandler_GetAllTodos(t *testing.T) {
 				m.todos[1] = &entity.Todo{ID: 1, Title: "タスク1", Description: "説明1"}
 				m.todos[2] = &entity.Todo{ID: 2, Title: "タスク2", Description: "説明2"}
 			},
-			setupMock: func(m *MockTodoService) {},
+			setupMock:      func(m *MockTodoService) {},
 			expectedStatus: http.StatusOK,
 			checkResponse: func(t *testing.T, rec *httptest.ResponseRecorder) {
 				var response map[string]interface{}
@@ -334,10 +334,10 @@ func TestTodoHandler_GetAllTodos(t *testing.T) {
 			},
 		},
 		{
-			name:      "不正なHTTPメソッド",
-			method:    http.MethodPost,
-			setupData: func(m *MockTodoService) {},
-			setupMock: func(m *MockTodoService) {},
+			name:           "不正なHTTPメソッド",
+			method:         http.MethodPost,
+			setupData:      func(m *MockTodoService) {},
+			setupMock:      func(m *MockTodoService) {},
 			expectedStatus: http.StatusMethodNotAllowed,
 			checkResponse:  func(t *testing.T, rec *httptest.ResponseRecorder) {},
 		},

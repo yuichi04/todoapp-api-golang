@@ -7,7 +7,7 @@
 - Go言語でのWebAPI開発
 - Clean Architectureの実装
 - RESTful API設計
-- データベース操作（GORM）
+- データベース操作（database/sql）
 - 依存性注入（DI）
 - エラーハンドリング
 - テスト駆動開発（TDD）
@@ -340,5 +340,5 @@ CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o todoapp cmd/api/main.
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Domain-Driven Design](https://martinfowler.com/bliki/DomainDrivenDesign.html)
 - [Go Web Programming](https://golang.org/doc/)
-- [Gin Framework](https://gin-gonic.com/)
-- [GORM](https://gorm.io/)
+- [Go標準HTTP処理](https://pkg.go.dev/net/http)
+- [Go Database/SQL パッケージ](https://pkg.go.dev/database/sql)

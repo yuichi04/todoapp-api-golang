@@ -31,7 +31,7 @@ func main() {
 	}
 
 	// 設定内容のログ出力（本番環境では機密情報を除外すること）
-	log.Printf("Configuration loaded - Environment: %s, Port: %d, DB Driver: %s", 
+	log.Printf("Configuration loaded - Environment: %s, Port: %d, DB Driver: %s",
 		cfg.App.Environment, cfg.Server.Port, cfg.Database.Driver)
 
 	// 2. データベース接続の確立
@@ -63,16 +63,16 @@ func main() {
 	// 4. 依存性注入による各層の構築
 	// Clean Architectureの依存関係の流れ：
 	// main -> Handler -> Service -> Repository -> Database
-	
+
 	// 4-1. リポジトリ層（データアクセス）の初期化
 	// 標準のdatabase/sqlパッケージを使用したリポジトリ実装
 	todoRepo := database.NewTodoRepository(dbManager.DB)
-	
+
 	// 4-2. ドメインサービス層（ビジネスロジック）の初期化
 	// リポジトリをサービスに注入
 	todoService := service.NewTodoService(todoRepo)
-	
-	// 4-3. ハンドラー層（HTTP処理）の初期化  
+
+	// 4-3. ハンドラー層（HTTP処理）の初期化
 	// サービスをハンドラーに注入
 	todoHandler := handler.NewTodoHandler(todoService)
 
